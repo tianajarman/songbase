@@ -71,7 +71,7 @@ def show_all_artists():
     return render_template('artist-all.html', artists=artists)
 
 
-@app.route('/artist/add', methods=['GET', 'POST'])
+@app.route('/artists/add', methods=['GET', 'POST'])
 def add_artists():
     if request.method == 'GET':
         return render_template('artist-add.html')
@@ -91,6 +91,39 @@ def add_artists():
 def show_all_songs():
     songs = Song.query.all()
     return render_template('song-all.html', songs=songs)
+
+
+@app.route('/song/add', methods=['GET', 'POST'])
+def add_songs():
+    if request.method == 'GET':
+        return render_template('song-add.html')
+    if request.method == 'POST':
+        # get data from the form
+        name = request.form['name']
+        year = request.form['year']
+        lyrics = request.form['lyrics']
+        artist_name = request.form['artist_name']
+
+        artist = Artist.query.filter_by(name=artist_name).first()
+
+        # insert the data into the database
+        song = Song(name=name, year=year, lyrics=lyrics, artist=artist)
+        db.session.add(song)
+        db.session.commit()
+        return redirect(url_for('show_all_songs'))
+
+
+@app.route('/artists/edit/<int:id>', methods=['GET', 'POST'])
+def edit_artists(id):
+    if request.method == 'GET':
+        return render_template('artist-edit.html', artist=artist)
+    if request.method == 'POST':
+        # get data from the form
+        artist.name = request.form['name']
+        artist.about = request.form['about']
+
+        db.session.commit()
+        return redirect(url_for('show_all_artists'))
 
 
 if __name__ == '__main__':
