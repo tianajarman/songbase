@@ -114,14 +114,15 @@ def add_songs():
 
 
 @app.route('/artists/edit/<int:id>', methods=['GET', 'POST'])
-def edit_artists(id):
+def edit_artist(id):
+    artist = Artist.query.filter_by(id=id).first()
     if request.method == 'GET':
         return render_template('artist-edit.html', artist=artist)
     if request.method == 'POST':
-        # get data from the form
+        # update data based on the form data
         artist.name = request.form['name']
         artist.about = request.form['about']
-
+        # update the database
         db.session.commit()
         return redirect(url_for('show_all_artists'))
 
